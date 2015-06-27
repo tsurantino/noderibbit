@@ -1,0 +1,11 @@
+extends auth_layout
+
+block content
+  form.form-signin(action="/users/login", method="POST")
+    include ../message
+
+    h2.form-signin-heading Please sign in
+    .form-group: input.form-control(name="email", type="email", placeholder="Email", required, autofocus)
+    .form-group: input.form-control(name="password", type="password", placeholder="Password", required)
+    .form-group: button.btn.btn-success.btn-block(type="submit") Sign in
+    p: a(href="/users/register") No account? Sign up now

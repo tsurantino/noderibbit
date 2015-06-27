@@ -1,0 +1,15 @@
+extends auth_layout
+
+block content
+  form.form-signin(action="/users/register", method="POST", enctype="multipart/form-data")
+    include ../message
+
+    h2.form-signin-heading Create an account
+    .form-group: input.form-control(name="username", type="text", placeholder="Username", required, autofocus)
+    .form-group: input.form-control(name="email", type="email", placeholder="E-mail", required)
+    .form-group: input.form-control(name="password", type="password", placeholder="Password", required)
+    .form-group: input.form-control(name="name", type="text", placeholder="Full name", required)
+    .form-group
+      label(for="picture") Profile picture
+      input.form-control(name="picture", type="file", required)
+    button.btn.btn-success.btn-block(type="submit") Register
