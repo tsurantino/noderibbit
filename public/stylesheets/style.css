@@ -1,8 +1,23 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding-top: 5em;
+  padding-bottom: 1em;
 }
 
-a {
-  color: #00B7FF;
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+
+.push-top { margin-top: 0.5em; }
+.push-down { margin-bottom: 0.5em; }
+.push-right { margin-right: 0.5em; }
+.push-left { margin-right: 0.5em; }
+
+#top h1 {
+  margin: 0;
+}
+
+.ribbit {
+  margin-bottom: 2em;
 }

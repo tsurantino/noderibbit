@@ -4,9 +4,33 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css')
   body
-    block content
+    .container
+      section#top
+        .row
+          .col-md-6
+            h1: a(href="/") Ribbit
+          .col-md-6
+            div.pull-right
+              if user
+                p Hey #{user.name}! #[a(href="/users/logout/") Logout]
+              else
+                .btn-group
+                  a.btn.btn-default(href="/users/login") Login
+                  button#btn-login.btn.btn-default.dropdown-toggle(
+                    type="button", data-toggle="dropdown", aria-haspopup="true",
+                    aria-expanded="true") 
+                    span.caret
+                  ul.dropdown-menu(aria-labelledby="btn-login")
+                    li: a(href="/users/login") Login with Ribbit
+                    li(class="divider")
+                    li: a(href="#") Login with Facebook
+                    li: a(href="#") Login with Google+
+                    li: a(href="#") Login with Twitter
+      .row: .col-md-12: hr
+      include message
+      block content
 
+    script(src='https://code.jquery.com/jquery-1.11.3.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 

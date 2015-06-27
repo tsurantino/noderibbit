@@ -4,11 +4,18 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var flash = require('express-flash');
+var session = require('express-session');
+var passport = require('passport');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+mongoose.connect('mongodb://localhost/ribbit');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +28,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// COOKIE, SESSION AND FLASH SETTINGS
+app.use(cookieParser('secret'));
+app.use(session({
+    cookie: { maxAge: 3000000 },
+    saveUninitialized: true,
+    resave: 'true',
+    secret: 'secret'
+}));
+app.use(flash());
+
+// PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
+
+// PASSPORT STRATEGY
+var initPassport = require('./passport/local');
+initPassport(passport);
 
 app.use('/', routes);
 app.use('/users', users);
