@@ -1,6 +1,6 @@
 body {
   padding-top: 5em;
-  padding-bottom: 1em;
+  padding-bottom: 5em;
 }
 
 @media (min-width: 768px) {
@@ -9,10 +9,10 @@ body {
   }
 }
 
-.push-top { margin-top: 0.5em; }
-.push-down { margin-bottom: 0.5em; }
-.push-right { margin-right: 0.5em; }
-.push-left { margin-right: 0.5em; }
+.push-up { margin-top: 1em !important; }
+.push-down { margin-bottom: 1em !important; }
+.push-right { margin-right: 1em !important; }
+.push-left { margin-right: 1em !important; }
 
 #top h1 {
   margin: 0;
@@ -20,4 +20,12 @@ body {
 
 .ribbit {
   margin-bottom: 2em;
+}
+
+.ribbit-content {
+  padding: 0.6em;
+}
+
+.ribbit-content p {
+  margin-bottom: 5px;
 }

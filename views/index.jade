@@ -1,39 +1,49 @@
 extends layout
 
 block content
-  section#new-ribbit
-      .row
-        .col-lg-12
-          form.form(action="/", method="POST")
-            .input-group.input-group-lg
-              input(name="content", type="text", class="form-control input-lg", placeholder="Enter your text here")
-              span.input-group-btn
-                input(type="submit", class="btn btn-success btn-lg", value="Ribbit")
-  .row: .col-md-12: hr
-  // EMPTY TWEETS p No ribbits have been posted yet! #[a(href="#") Post yours now].
-  .ribbit
-    .row
-      .col-md-2.text-center
-        img.img-circle.img-responsive(src="https://pbs.twimg.com/profile_images/606056698420158464/7U4FvinA.png", class="push-down")
-        a(href="#") tsurantino
-      .col-md-10
-        p The paradox of work is that many people hate their jobs, but they are considerably more miserable doing nothing.
-        p.text-muted Posted June 23, 2015 at 5:20 pm
-  .ribbit
-    .row
-      .col-md-2.text-center
-        img.img-circle.img-responsive(src="https://pbs.twimg.com/profile_images/606056698420158464/7U4FvinA.png", class="push-down")
-        a(href="#") tsurantino
-      .col-md-10
-        p The paradox of work is that many people hate their jobs, but they are considerably more miserable doing nothing.
-        p.text-muted Posted June 23, 2015 at 5:20 pm
-  // PAGINATION nav.text-center
-    ul.pagination
-      li: a(href="#", aria-label="Previous"): span(aria-hidden="true") &laquo;
-      li(class="active"): a(href="#") 1
-      li: a(href="#") 1
-      li: a(href="#") 2
-      li: a(href="#") 3
-      li: a(href="#") 4
-      li: a(href="#") 5
-      li: a(href="#", aria-label="Next"): span(aria-hidden="true") &raquo;
+  if user
+    #new-ribbit
+        .row
+          .col-lg-12
+            form.form(action="/", method="POST")
+              .input-group.input-group-lg
+                input(name="content", type="text", class="form-control input-lg", placeholder="Enter your text here")
+                span.input-group-btn
+                  input(type="submit", class="btn btn-success btn-lg", value="Ribbit")
+    .row: .col-md-12: hr
+  else
+    ul.nav.nav-pills
+      li.active.push-right(role="presentation")
+        a(href="#all", role="tab", data-toggle="tab") All Posts
+      li(role="presentation")
+        a(href="#feed", role="tab", data-toggle="tab") Your Feed
+    .row: .col-md-12: hr
+    .tab-content
+      .tab-pane.active.fade.in#all
+        if ribbits.length > 0
+          each ribbit in ribbits
+            .ribbit
+              .row
+                .col-md-2.text-center
+                  img.img-circle.img-responsive(src="#{ribbit.owner.profile}", class="push-down")
+                .col-md-10.ribbit-content
+                  p: a(href="#") #{ribbit.owner.name}
+                  p #{ribbit.content}
+                  p.text-muted Posted #{ribbit.created}
+          else
+            p No ribbits have been posted yet!
+            if user
+              p Post yours now by writing text in the above form.
+            else
+              p To post yours, #[a(href="/users/login/") login first].
+
+        - var previousPage = parseInt(page) - 1;
+        - var nextPage = parseInt(page) + 1;
+        if parseInt(page) > 0
+          p: #[a.pull-left(href="/") Previous Page] #[a.pull-right(href="./?page=" + nextPage) Next Page]
+        else if parseInt(page) == parseInt(pages)
+          p: #[a.pull-left(href="./?page=" + previousPage) Previous Page]
+        else if parseInt(pages) > 1
+          p: a.pull-right(href="./?page=" + nextPage) Next Page
+      .tab-pane.fade#feed
+        p Not implemented yet

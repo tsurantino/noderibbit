@@ -1,9 +1,10 @@
 doctype html
 html
   head
-    title= title
+    title Ribbit, a Twitter clone to learn MEAN
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+    block extra_head
   body
     .container
       section#top
@@ -33,4 +34,5 @@ html
 
     script(src='https://code.jquery.com/jquery-1.11.3.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+    block extra_scripts
 

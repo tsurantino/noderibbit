@@ -1,14 +1,20 @@
-var mongoose = require('mongoose')
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
-module.exports = mongoose.model('User', {
+var userSchema = Schema({
   username: String,
   email: String,
   password: String,
   name: String,
   profile: String,
-
   ribbits: [{
-    content: { type: String, maxlength: 140 },
-    created: { type: Date, default: Date.now },
-  }]
-})
+    type: Schema.Types.ObjectId,
+    ref: 'Ribbit',
+  }],
+});
+
+userSchema.statics.register = function(data, cb) {
+
+}
+
+module.exports = mongoose.model('User', userSchema);

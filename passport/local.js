@@ -1,4 +1,6 @@
 var bcrypt = require('bcrypt-nodejs');
+var gm = require('gm');
+
 var User = require('../models/user');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -58,6 +60,8 @@ module.exports = function(passport) {
             return done(null, false,
               req.flash('errorMessage', 'User already exists'));
           } else {
+            console.log('Creating a new user');
+            User.register
             // if there is no user with that email
             // create the user
             var newUser = new User();
@@ -65,10 +69,35 @@ module.exports = function(passport) {
             newUser.email = email;
             newUser.password = createHash(password);
             newUser.name = req.body['name'];
+
+            var profileLocation = req.files['picture'].path;
+
+            if (req.body.pictureCanvasData !== undefined) {
+              canvasData = JSON.parse(req.body.pictureCanvasData);
+              cropBoxData = JSON.parse(req.body.pictureCropBoxData);
+
+              // crop according to args from cropper, taking into
+              // account image resizing within the canvas
+              gm(profileLocation)
+                .resize(canvasData.width, canvasData.height)
+                .crop(cropBoxData.width, cropBoxData.height,
+                  cropBoxData.left - canvasData.left,
+                  cropBoxData.top - canvasData.top)
+                .write(profileLocation, function(err) {
+                  if (!err) console.log('Finished cropping');
+                  else console.log(err);
+                });
+            }
+
             // req.files includes details about the already processed
             // uploaded image from multer. The name is the name of the
             // picture after it has been saved by multer. 
-            newUser.picture = req.files['picture'].name;
+
+            // note, we save it to the absolute path, when we should
+            // consider saving the name. this is a hack because my
+            // filler data uses an HTTPS url rather than a file path
+            // TODO: harmonize path/http url profiles
+            newUser.profile = profileLocation;
             
             newUser.save(function(err) {
               if (err) {

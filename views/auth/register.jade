@@ -1,5 +1,8 @@
 extends auth_layout
 
+block extra_head
+  link(rel='stylesheet', href='/stylesheets/cropper.min.css')
+
 block content
   form.form-signin(action="/users/register", method="POST", enctype="multipart/form-data")
     include ../message
@@ -11,5 +14,93 @@ block content
     .form-group: input.form-control(name="name", type="text", placeholder="Full name", required)
     .form-group
       label(for="picture") Profile picture
-      input.form-control(name="picture", type="file", required)
+      input.form-control(id="picture" name="picture", type="file", required)
+      img#picture-reference(src="", style="display:none;")
+      a#btn-redo.btn.btn-default.btn-block.push-up(href="#", data-toggle="modal" data-target="#crop-modal") Redo Crop
+    .form-group
+      input(type="hidden", id="pictureCanvasData", name="pictureCanvasData", value="")
+      input(type="hidden", id="pictureCropBoxData", name="pictureCropBoxData", value="")
     button.btn.btn-success.btn-block(type="submit") Register
+
+  #crop-modal.modal.fade(role="dialog", aria-labelledby="crop-modal")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title You need to crop this picture
+        .modal-body
+          p We want your pictures to look pretty on Ribbit! Please crop it to a square aspect ratio.
+          p You can use your mouse to move your picture, and your mouse wheel to zoom.
+          #crop-image.text-center: img.img-responsive(src="")
+        .modal-footer
+          button.btn.btn-success(data-dismiss="modal") Save Crop
+
+block extra_scripts
+  script(type="text/javascript" src="/javascripts/cropper.min.js")
+  script(type="text/javascript").
+    $('#btn-redo').hide();
+    $('#picture').on('change', function() {
+      generatePreviewFromInput();
+    });
+
+    var $image = $('#crop-image > img'),
+        cropBoxData,
+        canvasData;
+
+    $('#crop-modal').on('shown.bs.modal', function () {
+      $image.cropper({
+        autoCropArea: 0.5,
+        aspectRatio: 1/1,
+        built: function () {
+          $image.cropper('setCropBoxData', cropBoxData);
+          $image.cropper('setCanvasData', canvasData);
+        }
+      });
+    }).on('hidden.bs.modal', function () {
+      cropBoxData = $image.cropper('getCropBoxData');
+      canvasData = $image.cropper('getCanvasData');
+
+      $('#pictureCropBoxData').val(JSON.stringify(cropBoxData));
+      $('#pictureCanvasData').val(JSON.stringify(canvasData));
+
+      $('#btn-redo').show();
+      
+      $image.cropper('destroy');
+    });
+
+    function checkIfNeedCrop() {
+      $pictureFromInputReference = $('#picture-reference');
+      $pictureFromInputReference.cropper({
+        built: function() {
+          aspect = $pictureFromInputReference.cropper('getImageData').width / 
+            $pictureFromInputReference.cropper('getImageData').height;
+          
+          if (aspect != 1) {
+            $image = $('#crop-image > img');
+
+            // copy the image to our modal
+            $image.attr('src', $pictureFromInputReference.attr('src'));
+            $('#crop-modal').modal('show');
+          }
+
+          // we need to destroy the cropper in case we want to process
+          // new images, otherwise the old image is used as a reference
+          $pictureFromInputReference.cropper('destroy');
+        }
+      }); 
+    }
+
+    function generatePreviewFromInput() {
+      var tgt = window.event.srcElement;
+      var files = tgt.files;
+
+      if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function() {
+          $('#picture-reference').attr('src', fr.result);
+          checkIfNeedCrop();
+        }
+        fr.readAsDataURL(files[0]);
+      }
+    }

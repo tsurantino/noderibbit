@@ -1,4 +1,10 @@
-if errorMessage.length > 0
-  .alert.alert-danger #[strong Error!] #{errorMessage}
-if successMessage.length > 0
-  .alert.alert-success #[strong Success!] #{successMessage}
+if errorMessage && errorMessage.length > 0
+  .alert.alert-danger.alert-dismissible
+    button.close(type="button", data-dismiss="alert", aria-label="Close")
+      span(aria-hidden="true") &times;
+    strong Error! #{errorMessage}
+if successMessage && successMessage.length > 0
+  .alert.alert-success.alert-dismissible
+    button.close(type="button", data-dismiss="alert", aria-label="Close")
+      span(aria-hidden="true") &times;
+    #[strong Success!] #{successMessage}
